@@ -2,6 +2,8 @@ package net.future;
 import static org.lwjgl.opengl.GL11.*;
 import net.future.audio.AudioManager;
 import net.future.helper.FontHelper;
+import net.future.material.MyTextureLoader;
+import net.future.material.SkyBox;
 import net.future.player.Player;
 import net.future.world.World;
 import org.lwjgl.opengl.GL12;
@@ -21,20 +23,30 @@ public class GameLoop
 {
 	private World w;
 	private Player p;
-	private int updateRate = 80;
-	private static int lastFPS=0;
+	private static int lastFPS=(int) getTime();
+	public static boolean run;
+	
+	//Just a placeholder used by getFPS. Not actual FPS
 	private static int fps = 0;
+	
+	//Actual FPS calculated every second
+	private static int realFPS = 0;
+	
 	public UnicodeFont font;
 	private static float lastFrame = 0;
 	private FloatBuffer perspectiveProjectionMatrix = BufferUtils.createFloatBuffer(16);
 	private FloatBuffer orthographicProjectionMatrix = BufferUtils.createFloatBuffer(16);
 	public static float delta = getDelta();
+	
+	public SkyBox sky;
 
 	/**
 	 * Initial set-up, called once from Driver class
 	 */
 	public void initialize()
-	{	
+	{
+		run = true;
+		
 		//Init the time variables
 		lastFrame=getTime();
 		getTime();
@@ -45,9 +57,6 @@ public class GameLoop
 		this.setUpFog();
 		this.setUpWorld();
 
-		//Allows 2d textures
-		glEnable(GL_TEXTURE_2D);
-
 		//Makes the default screen color black
 		glClearColor(0.0f, 0.0f, 0.0f, 0.5f);
 		glClearDepth(1.0f);
@@ -57,6 +66,9 @@ public class GameLoop
 
 		//Initialize and set up the font system
 		this.font = FontHelper.getWhiteArial();
+		
+		//Set up skybox
+		sky = new SkyBox(MyTextureLoader.getTexture("res/textures/stars.jpg"));
 	}
 
 	/**
@@ -68,8 +80,9 @@ public class GameLoop
 		try
 		{
 			Display.setDisplayMode(new DisplayMode(1280,720));
+			//TODO Allow VSync to be enabled / disabled
 			Display.setVSyncEnabled(true);
-			Display.setTitle("Your Future Needs Help PreAlpha v0.01");
+			Display.setTitle("Your Future Needs Help v0.3");
 			Display.setResizable(false);
 			Display.create();
 		}
@@ -85,11 +98,9 @@ public class GameLoop
 	 */
 	private void setUpLighting() 
 	{
-		//Replaced by GL_RESCALE_NORMAL?
-		//glEnable(GL_NORMALIZE);
-
 		//Makes lighting smooth instead of flat
-		glShadeModel(GL_SMOOTH);
+		//Not needed when using shaders
+		//glShadeModel(GL_SMOOTH);
 
 		//Allow alpha in textures
 		glEnable(GL_BLEND);
@@ -99,7 +110,7 @@ public class GameLoop
 		glEnable(GL12.GL_RESCALE_NORMAL);
 
 		//Tell OpenGL to use the most correct, or highest quality, option when deciding
-		//on Gl_PERSEPECTIVE_CORRECTION details. Other choices are GL_FASTEST and GL_DONT_CARE
+		//on Gl_PERSEPECTIVE_CORRECTION details. Choices are GL_FASTEST and GL_DONT_CARE, GL_NICEST
 		glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
 		//Enables 3D and depth. Also enables
@@ -107,7 +118,7 @@ public class GameLoop
 		glEnable(GL_DEPTH_TEST);
 
 		//Store values in pixel data if depth
-		//is less that or equal.
+		//is less than or equal.
 		glDepthFunc(GL_LEQUAL);
 
 		//Enable lighting in general
@@ -117,21 +128,27 @@ public class GameLoop
 		glEnable(GL_CULL_FACE);
 		glCullFace(GL_BACK);
 
-		//Enable colors on faces / objects
-		glEnable(GL_COLOR_MATERIAL);
-		glColorMaterial(GL_FRONT, GL_DIFFUSE);
+		//Enable colors on faces / objects, only needed for
+		//immediate mode (@deprecated)
+		//glEnable(GL_COLOR_MATERIAL);
+		//glColorMaterial(GL_FRONT, GL_DIFFUSE);
 	}
 
 	private void setUpFog()
 	{
-		// Setup fog
-		//glFogi(GL_FOG_MODE, GL_EXP);
-		//glFogfv(GL_FOG_COLOR, fogColor);
-		//glFogf(GL_FOG_DENSITY, 0.1f);
-		//glHint(GL_FOG_HINT, GL_DONT_CARE);
-		//glFogf(GL_FOG_START, 10);
-		//glFogf(GL_FOG_END, 10 * 2);
-		//glEnable(GL_FOG);
+		glEnable(GL_FOG); 
+		{
+			FloatBuffer fogColor = BufferUtils.createFloatBuffer(4);
+			fogColor.put(0.5f).put(0.5f).put(0.5f).put(1.0f).flip();
+			
+			int fogMode = GL_EXP;
+			glFogi(GL_FOG_MODE, fogMode);
+			glFog(GL_FOG_COLOR, fogColor);
+			glFogf(GL_FOG_DENSITY, 0.01f);
+			glHint(GL_FOG_HINT, GL_FASTEST);
+			glFogf(GL_FOG_START, 1.0f);
+			glFogf(GL_FOG_END, 5.0f);
+		}
 	}
 
 	private void setUpWorld()
@@ -142,7 +159,7 @@ public class GameLoop
 		//Set Up Player / Camera
 		p = new Player(w, (float) Display.getWidth() / Display.getHeight(), 70);
 		w.add(p);
-		w.moveObj(p, new Vector3f(0, 0, 0));
+		w.moveObj(p, new Vector3f(81.3151f, -1.3f, -15.424f));
 		p.cam.applyPerspectiveMatrix();
 
 		glGetFloat(GL_PROJECTION_MATRIX, perspectiveProjectionMatrix);
@@ -161,15 +178,15 @@ public class GameLoop
 	public void gameLoop()
 	{
 		//Main Update Loop continues until the window is closed.
-		while(!Display.isCloseRequested())
+		while(run && !Display.isCloseRequested())
 		{
 			this.render();
 			this.update();
-
-			//Sync the display to max FPS
-			Display.sync(updateRate);
+			
+			//Sync the GPU with the CPU, basically required
+			Display.update();
 		}
-		this.cleanUp();
+		cleanUp();
 	}
 
 	/**
@@ -179,36 +196,10 @@ public class GameLoop
 	private void render()
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//Texture arial = MyTextureLoader.getTexture("res/fonts/Arial.png");
-		//arial.bind();
-		//FontHelper.renderString("Test", arial.getTextureID(), 16, -0.9f, 0, 0.3f, 0.225f);
-		//Somehow, all this code allows Text to go on the screen....
-		glMatrixMode(GL_PROJECTION);
-		glLoadMatrix(orthographicProjectionMatrix);
-		glMatrixMode(GL_MODELVIEW);
-		glPushMatrix();
-		glLoadIdentity();
-		glDisable(GL_LIGHTING);
-		//// BEGIN DRAW TEXT ///
-
-		//Draw Pause Menu Text if game is paused
-		if(this.w.paused)
-			FontHelper.pauseMenu(this.font, this.p);
-		else
-			//If game is not paused, draw a crosashair
-			FontHelper.drawCrosshair(font);
-
-		//Draw Debug screen if debug is on
-		if(this.p.debugMenu)
-			FontHelper.debugMenu(this.font, this.p, getFPS());
 		
-		//// END DRAW TEXT ///
-		glEnable(GL_LIGHTING);
-		glPopMatrix();
-		glMatrixMode(GL_PROJECTION);
-		glLoadMatrix(perspectiveProjectionMatrix);
-		glMatrixMode(GL_MODELVIEW);
-		p.cam.applyPerspectiveMatrix();
+		FontHelper.update(p, font, realFPS, orthographicProjectionMatrix, perspectiveProjectionMatrix);
+		
+		sky.render(p.position);
 	}
 
 	/**
@@ -219,9 +210,10 @@ public class GameLoop
 	private void update()
 	{	
 		delta = getDelta();
+		getFPS();
 		
 		//Update the player
-		p.playerUpdate();
+		p.playerUpdate(delta);
 
 		//Main update method for the world
 		w.update();
@@ -261,12 +253,14 @@ public class GameLoop
 	}
 
 	/**
-	 * Calculate the FPS and set it in the title bar
+	 * Calculate the FPS
 	 */
 	public static float getFPS() 
 	{
-		if (getTime() - lastFPS > 1000) {
-			Display.setTitle("FPS: " + fps);
+		if (getTime() - lastFPS > 1000) 
+		{
+			realFPS = fps;
+			//Display.setTitle("FPS: " + fps);
 			fps = 0;
 			lastFPS += 1000;
 		}

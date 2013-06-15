@@ -1,6 +1,7 @@
 package net.future.model;
 
 import net.future.material.Material;
+import net.future.physics.AABB;
 
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -24,10 +25,7 @@ public class Face
 		this.points = points;
 	}
 	
-	public Face()
-	{
-		
-	}
+	public Face(){}
 	
 	public void setUpAABB()
 	{

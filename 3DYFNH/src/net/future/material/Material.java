@@ -8,6 +8,6 @@ public class Material
 	public int id;
 	public String name;
 	public Vector3f ambient, diffuse, specular;
-	public float shininess;
-	public int shader;
+	//public float shininess;
+	//public int shader;
 }

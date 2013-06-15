@@ -1,8 +1,9 @@
 package net.future.helper;
 import java.io.File;
+
+import net.future.material.ShaderLoader;
 import net.future.model.Model;
 import net.future.model.OBJLoader;
-import net.future.model.ShaderLoader;
 
 public class Reference 
 {
@@ -17,5 +18,6 @@ public class Reference
 	public static String pixelTextureVert = "res/shaders/pixelTexture.vert";
 	public static String pixelTextureFrag = "res/shaders/pixelTexture.frag";
 	public static Model bunny = OBJLoader.loadModel(new File("res/models/wow/wow.obj")).setShininess(128).setShader(ShaderLoader.loadShaderPair(pixelTextureVert, pixelTextureFrag)).setName("Bunny").setUpAABB().setScale(1f).setUpVBO();
-	public static Model test = OBJLoader.loadModel(new File("res/models/Ibanez/Ibanez.obj")).setShininess(128).setShader(ShaderLoader.loadShaderPair(pixelTextureVert, pixelTextureFrag)).setName("Bunny").setUpAABB().setScale(0.1f).setUpVBO();
+	public static Model test = OBJLoader.loadModel(new File("res/models/space/space.obj")).setShininess(128).setShader(ShaderLoader.loadShaderPair(pixelTextureVert, pixelTextureFrag)).setName("Bunny").setUpAABB().setScale(0.1f).setUpVBO();
+	public static Model portalGun = OBJLoader.loadModel(new File("res/models/portal_gun/portal_gun.obj")).setShininess(128).setShader(ShaderLoader.loadShaderPair(pixelTextureVert, pixelTextureFrag)).setName("Bunny").setUpAABB().setScale(0.001f).setUpVBO();
 }

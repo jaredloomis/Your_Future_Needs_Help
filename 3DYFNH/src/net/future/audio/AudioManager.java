@@ -9,6 +9,7 @@ import java.io.IOException;
 public class AudioManager 
 {
 	public static Sound infiniteRegression = new Sound(AudioManager.loadAudioFile("res"+File.separatorChar+"audio"+File.separatorChar+"AAL_AnInfinteRegression.wav"), true, 1, 1, false);
+	public static Sound epic = new Sound(AudioManager.loadAudioFile("res"+File.separatorChar+"audio"+File.separatorChar+"ValiantHeart.wav"), true, 1, 1, false);
 	
 	public static void update()
 	{

@@ -1,19 +1,18 @@
-#version 120
+#version 330 core
 
-varying vec4 varyingColour;
+out vec4 varyingColour;
+out vec3 varyingNormal;
+out vec4 varyingVertex;
+out float fogFactor; 
 
-varying vec3 varyingNormal;
+out int texID;
 
-varying vec4 varyingVertex;
-
-varying int texID;
-
-attribute int textureID;
+in int textureID;
 
 void main()
 {
 	texID = textureID;
-	
+
     // Pass the vertex colour attribute to the fragment shader.
     varyingColour = gl_Color;
     
@@ -28,4 +27,20 @@ void main()
     
     //Set texture coords
     gl_TexCoord[0] = gl_MultiTexCoord0;
+    
+    /// FOG STUFF ///
+    
+    //Log 2
+    const float LOG2 = 1.442695;
+    
+    //Set fogCoord
+	gl_FogFragCoord = length(gl_Position);
+	fogFactor = exp2( 
+					   -gl_Fog.density * 
+					   gl_Fog.density * 
+					   gl_FogFragCoord * 
+					   gl_FogFragCoord * 
+					   LOG2 
+					);
+	fogFactor = clamp(fogFactor, 0.0, 1.0);
 }

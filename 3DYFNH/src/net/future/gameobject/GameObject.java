@@ -3,9 +3,10 @@ import java.io.File;
 import net.future.model.Face;
 import net.future.model.Model;
 import net.future.model.OBJLoader;
-import net.future.physpacks.IPhysPack;
+import net.future.physics.physpack.IPhysPack;
 import net.future.world.World;
 
+import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
 
 public class GameObject 
@@ -30,7 +31,7 @@ public class GameObject
 		this.model = new Model();
 		this.model.faces.add(new Face(
 				new Vector3f(0.05f, 0.2f, -0.05f),
-				new Vector3f(0, -0.2f, 0),
+				new Vector3f(0, -0.5f, 0),
 				new Vector3f(-0.05f, 0, 0.05f)
 				));
 		this.model.faces.get(0).setUpAABB();
@@ -40,8 +41,9 @@ public class GameObject
 		this.position = new Vector3f(0, 0, 0);
 		this.rotation = new Vector3f(0, 0, 0);
 		this.velocity = new Vector3f(0, 0, 0);
+		this.grounded = false;
 	}
-	
+
 	public GameObject(World world, Model model)
 	{
 		this.world = world;
@@ -50,8 +52,9 @@ public class GameObject
 		this.velocity = new Vector3f(0, 0, 0);
 		this.name = "Default";
 		this.model = model;
+		this.grounded = false;
 	}
-	
+
 	public GameObject(World world, Model model, float[] color)
 	{
 		this.world = world;
@@ -61,8 +64,9 @@ public class GameObject
 		this.name = "Default";
 		this.color = color;
 		this.model = model;
+		this.grounded = false;
 	}
-	
+
 	public GameObject(World world, String model, float[] color)
 	{
 		this.world = world;
@@ -72,8 +76,9 @@ public class GameObject
 		this.name = "Default";
 		this.color = color;
 		this.model = OBJLoader.loadModel(new File(model));
+		this.grounded = false;
 	}
-	
+
 	public GameObject(GameObject copy)
 	{
 		this.world = copy.world;
@@ -84,11 +89,12 @@ public class GameObject
 		this.color = copy.color;
 		this.model = copy.model;
 		this.list = copy.list;
-		
+		this.grounded = false;
+
 		//if(model != null)
 		//	this.setUpList();
 	}
-	
+
 	/**
 	 * Called every update.
 	 * Override if necessary
@@ -98,13 +104,36 @@ public class GameObject
 		if(this.physics!=null)
 			this.physics.update(this);
 	}
-	
-	//public void setUpList()
+
+	public void rotateX(Vector3f amt)
 	{
-		//TODO uncomment this to enable display lists
-		//this.list = OBJLoader.createDisplayList(this.model);
+		//Vector3f center = Vector3f.sub(this.model.boundingBox.max, this.model.boundingBox.min, null);
+		
+		for(int i = 0; i < this.model.faces.size(); i++)
+		{
+			Face f = this.model.faces.get(i);
+			
+			for(int j = 0; j < f.points.length; j++)
+			{
+				
+				Vector3f cur = f.points[j];
+				
+				Vector3f distFromCenter = cur;
+
+				Vector2f offset=new Vector2f(distFromCenter.x, distFromCenter.y);
+				
+				double radians=Math.toRadians(amt.x);
+				
+				double nx=Math.cos(radians)*offset.x-Math.sin(radians)*offset.y;
+				double ny=Math.sin(radians)*offset.x+Math.cos(radians)*offset.y;
+				
+				f.points[j] = new Vector3f((float)nx+distFromCenter.x, (float)ny+distFromCenter.y, cur.z);
+			}
+		}
+		
+		this.model.setUpVBO();
 	}
-	
+
 	/**
 	 * For Debugging Purposes
 	 */

@@ -5,13 +5,13 @@ import net.future.gameobject.GameObject;
 import net.future.gameobject.Light;
 import net.future.gameobject.ObjectBunny;
 import net.future.helper.Reference;
-import net.future.math.GeometryHelper;
 import net.future.model.Model;
+import net.future.physics.Physics;
 import net.future.player.Player;
-import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Vector3f;
+import org.newdawn.slick.opengl.Texture;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL15.*;
 import static org.lwjgl.opengl.GL20.*;
@@ -20,22 +20,31 @@ public class World
 {
 	public List<GameObject> objects;
 	public Light[] lights;
-	public GameObject cube;
+	public Physics physics;
 	public boolean paused;
+
+	public GameObject cube;
+	public Texture skybox;
 
 	public World()
 	{
 		this.objects = new ArrayList<GameObject>();
 		this.lights = new Light[6];
+		this.physics = new Physics(0.0026f);
 		this.paused = false;
 
+		/// SKYBOX ///
+		//this.skybox = MyTextureLoader.getTexture("res/textures/starry.jpg");
+		//MyTextureLoader.setupCubeMap(skybox.getTextureID());
+
 		cube = new ObjectBunny(this);
-		cube.position = new Vector3f(0, 0, 0);
+		cube.position = new Vector3f(5, 5, -3);
+		//cube.rotateX(new Vector3f(10, 0, 0));
 		cube.name = "bunny";
-		this.add(cube);
-		
+		//this.add(cube);
+
 		GameObject test = new GameObject(this, Reference.test);
-		test.position = new Vector3f(3, 0, 0);
+		test.position = new Vector3f(-3, -5, -3);
 		test.name = "test";
 		this.add(test);
 
@@ -69,25 +78,6 @@ public class World
 						//renderType 0 means use display lists (DEPRECATED) NOT EVEN POSSIBLE ANYMORE
 						if(renderType==0)
 						{
-							Model m = cur.model;
-
-							//Move the object
-							glTranslatef(-cur.position.x, -cur.position.y, -cur.position.z);
-
-							//Scale the object using the scale variable
-							glScalef(cur.model.scale, cur.model.scale, cur.model.scale);
-
-							//Set the shininess
-							glMaterialf(GL_FRONT, GL_SHININESS, m.shininess);
-
-							//Set the color
-							glColor3f(cur.color[0], cur.color[1], cur.color[2]);
-
-							//Use the model's shader
-							glUseProgram(m.shader);
-
-							//Old way to call objects
-							glCallList(cur.list);
 						}
 						//renderType 1 means use VBOs (Faster, better, cooler)
 						else if(renderType==1)
@@ -96,6 +86,10 @@ public class World
 
 							//Move the object
 							glTranslatef(cur.position.x, cur.position.y, cur.position.z);
+
+							glRotatef(cur.rotation.x, 1, 0, 0);
+							glRotatef(cur.rotation.y, 0, 1, 0);
+							glRotatef(cur.rotation.z, 0, 0, 1);
 
 							//Set the shininess
 							glMaterialf(GL_FRONT, GL_SHININESS, m.shininess);
@@ -111,14 +105,14 @@ public class World
 
 							if(m.texture!=null)
 							{
-								//OpenGL can't handle more than 7 GL_TEXTUREX s usiong this method
-								if(m.textures.size()<7)
-									for(int j = 0; j < m.textures.size(); j++)
-									{
-										GL13.glActiveTexture(GL13.GL_TEXTURE0+j);
-										GL11.glBindTexture(GL11.GL_TEXTURE_2D, m.textures.get(j).getTextureID());
-										//m.textures.get(j).bind();
-									}
+								//OpenGL can't handle more than 7 GL_TEXTUREX s using this method
+								//if(m.textures.size()<=7)
+								for(int j = 0; j < m.textures.size(); j++)
+								{
+									GL13.glActiveTexture(GL13.GL_TEXTURE0+j);
+									GL11.glBindTexture(GL11.GL_TEXTURE_2D, m.textures.get(j).getTextureID());
+									//m.textures.get(j).bind();
+								}
 
 								//Set the shader's "textures[10]" array equal to {0, 1, 2, 3, 4, ect.}
 								//Cannot set as constant in shader because sampler2D s must be set by
@@ -127,12 +121,10 @@ public class World
 								{
 									//Find the "memory address" of textures sampler2D's specified index uniform in shader
 									int loc2 = glGetUniformLocation(m.shader, "textures["+j+"]");
-									
+
 									//Set it to current number
 									glUniform1i(loc2, j);
 								}
-
-								//System.out.println(m.textID.position() + "---" + m.textID.get());
 
 								//Find the "memory address" of textureID attribute in shader
 								texIDVar = glGetAttribLocation(m.shader, "textureID");
@@ -186,15 +178,14 @@ public class World
 							}
 							glDisableClientState(GL_COLOR_ARRAY);
 							glDisableClientState(GL_NORMAL_ARRAY);
-							
+
 							//Unbind all textures
-							if(m.textures.size()<7)
-								for(int j = 0; j < m.textures.size(); j++)
-								{
-									GL13.glActiveTexture(GL13.GL_TEXTURE0+j);
-									GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-									//m.textures.get(j).bind();
-								}
+							//if(m.textures.size()<=7)
+							for(int j = 0; j < m.textures.size(); j++)
+							{
+								GL13.glActiveTexture(GL13.GL_TEXTURE0+j);
+								GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
+							}
 						}
 
 						//Resets the array buffer, shader, texture, and color to default values
@@ -213,7 +204,7 @@ public class World
 			if(!paused)
 				cur.update();
 		}
-		
+
 		//Call the update method for all lights in scene
 		for(int i =0; i < this.lights.length; i++)
 		{
@@ -221,11 +212,7 @@ public class World
 				this.lights[i].update();
 		}
 
-		//Sync the GPU with the CPU, basically required
-		Display.update();
-
-		//TODO I should enable this, but it feels alot more jittery when I do
-		//Display.sync(80);
+		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 	}
 
 	/**
@@ -264,7 +251,7 @@ public class World
 	 */
 	public boolean canPlaceHere(GameObject obj, float x, float y, float z)
 	{
-		//if(obj.model != null)
+		if(obj.model != null)
 		{
 			for(int i = 0; i < this.objects.size(); i++)
 			{
@@ -272,7 +259,7 @@ public class World
 
 				if(cur != obj)
 				{
-					if(GeometryHelper.willIntersect(obj, cur, new Vector3f(x, y, z)))
+					if(Physics.willIntersect(obj, cur, new Vector3f(x, y, z)))
 					{
 						return false;
 					}

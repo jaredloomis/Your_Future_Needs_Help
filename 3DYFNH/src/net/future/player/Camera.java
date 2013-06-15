@@ -44,12 +44,12 @@ public class Camera implements ICamera
 		this.maxLookUp = 90;
 		this.maxLookDown = -90;
 		this.zNear = 0.01f;
-		this.zFar = 100;
+		this.zFar = 300;
 		this.aspectRatio=aspect;
 		this.fov = fov;
 		this.moveSpeed = 1f;
-		this.jumpForce = 0.18f;
-		this.fly = true;
+		this.jumpForce = 0.06f;
+		this.fly = false;
 
 		this.kUp = Keyboard.KEY_W;
 		this.kDown = Keyboard.KEY_S;
@@ -97,11 +97,9 @@ public class Camera implements ICamera
 	public void processKeyboard(float delta) 
 	{
 		float d=delta;
-		if (d <= 0)
-		{
-			d = 16;
-			//throw new IllegalArgumentException("delta (" + delta + ") is 0 or is smaller than 0");
-		}
+		
+		if(d < 0)
+			throw new IllegalArgumentException("delta (" + delta + ") is 0 or is smaller than 0");
 
 		boolean keyUp = Keyboard.isKeyDown(this.kUp);
 		boolean keyDown = Keyboard.isKeyDown(this.kDown);
@@ -138,17 +136,19 @@ public class Camera implements ICamera
 		if(fly)
 		{
 			if (flyUp && !flyDown) {
-				this.world.moveObj(this.parent, new Vector3f(this.parent.position.x, this.parent.position.y + d * 0.003f * moveSpeed, this.parent.position.z));
+				//this.world.moveObj(this.parent, new Vector3f(this.parent.position.x, this.parent.position.y + d * 0.003f * moveSpeed, this.parent.position.z));
+				this.parent.velocity.y += d *0.003f * moveSpeed;
 			}
 			if (flyDown && !flyUp) {
-				this.world.moveObj(this.parent, new Vector3f(this.parent.position.x, this.parent.position.y - d * 0.003f * moveSpeed, this.parent.position.z));
+				//this.world.moveObj(this.parent, new Vector3f(this.parent.position.x, this.parent.position.y - d * 0.003f * moveSpeed, this.parent.position.z));
+				this.parent.velocity.y -= d *0.003f * moveSpeed;
 			}
 		}
 		else
 		{
 			if (flyUp && this.parent.grounded)
 			{
-				this.parent.velocity.y=(this.jumpForce) + this.parent.velocity.y;
+				this.parent.velocity.y += this.jumpForce;
 			}
 		}
 	}
