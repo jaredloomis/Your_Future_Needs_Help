@@ -24,7 +24,7 @@ public class Input
 				{
 					keys[cur]=true;
 				}
-				else if(keys[cur])
+				else
 				{
 					keys[cur]=false;
 				}
@@ -32,6 +32,11 @@ public class Input
 		}
 	}
 
+	/**
+	 * Returns true if the key was pressed down this update
+	 * 
+	 * @param key - The ascii code of the character
+	 */
 	public boolean getKeypress(int key)
 	{
 		this.update();

@@ -4,6 +4,7 @@ import net.future.audio.AudioManager;
 import net.future.gameobject.GameObject;
 import net.future.helper.Input;
 import net.future.physics.physpack.PhysPlayer;
+import net.future.server.Server;
 import net.future.world.World;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -13,6 +14,7 @@ public class Player extends GameObject
 	private Input in;
 	public Camera cam;
 	public boolean debugMenu;
+	public Server s;
 	
 	//Controls
 	public int debugButton = Keyboard.KEY_I;
@@ -20,6 +22,8 @@ public class Player extends GameObject
 	public int close = Keyboard.KEY_X;
 	public int pause = Keyboard.KEY_ESCAPE;
 	public int fly = Keyboard.KEY_F;
+	public int host = Keyboard.KEY_H;
+	public int join = Keyboard.KEY_J;
 
 	public Player(World w, float aspect, float fov)
 	{
@@ -31,6 +35,7 @@ public class Player extends GameObject
 		this.cam.applyPerspectiveMatrix();
 		this.physics = new PhysPlayer();
 		
+		//Play epic music
 		AudioManager.epic.toggle();
 	}
 
@@ -79,6 +84,7 @@ public class Player extends GameObject
 		{	
 			debugMenu=!debugMenu;
 		}
+		//Toggle music
 		if(in.getKeypress(music))
 		{
 			AudioManager.epic.toggle();
@@ -89,14 +95,21 @@ public class Player extends GameObject
 			this.cam.fly=!this.cam.fly;
 			this.grounded=false;
 		}
+		//Host a server
+		if(in.getKeypress(host) && s==null)
+		{
+			s = new Server(this, new ServerPlayer(this.world), true);
+		}
+		//Join a server
+		if(in.getKeypress(join) && s==null)
+		{
+			s = new Server(this, new ServerPlayer(this.world), false);
+		}
 		
 		//Set position of light 0 of the world to player position
 		if (Keyboard.isKeyDown(Keyboard.KEY_Q)) 
 		{
-            this.world.lights[0].lightPosition.flip();
-            this.world.lights[0].lightPosition.clear();
-            this.world.lights[0].lightPosition.put(new float[]{this.position.x, this.position.y, this.position.z, 1});
-            this.world.lights[0].lightPosition.flip();
+			this.world.lights[0].move(this.position);
         }
 	}
 

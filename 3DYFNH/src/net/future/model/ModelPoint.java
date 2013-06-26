@@ -6,6 +6,7 @@ public class ModelPoint extends Model
 {
 	public ModelPoint()
 	{
+		super("");
 		this.verts.add(new Vector3f(0f, 0.1f, -0.1f));
 		this.verts.add(new Vector3f(-0.1f, 0f, 0.1f));
 		this.verts.add(new Vector3f(0f, 0f, 0f));

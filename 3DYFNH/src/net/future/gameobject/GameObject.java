@@ -28,7 +28,7 @@ public class GameObject
 	 */
 	public GameObject(World w)
 	{
-		this.model = new Model();
+		this.model = new Model("");
 		this.model.faces.add(new Face(
 				new Vector3f(0.05f, 0.2f, -0.05f),
 				new Vector3f(0, -0.5f, 0),

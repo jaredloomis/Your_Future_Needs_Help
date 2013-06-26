@@ -47,7 +47,7 @@ public class Camera implements ICamera
 		this.zFar = 300;
 		this.aspectRatio=aspect;
 		this.fov = fov;
-		this.moveSpeed = 1f;
+		this.moveSpeed = 0.2f;
 		this.jumpForce = 0.06f;
 		this.fly = false;
 
@@ -65,31 +65,34 @@ public class Camera implements ICamera
 		float mouseDX = Mouse.getDX() * mouseSpeed * 0.16f;
 		float mouseDY = Mouse.getDY() * mouseSpeed * 0.16f;
 
-		if (this.parent.rotation.y + mouseDX >= 360) 
+		if(mouseDX!=0 || mouseDY!=0)
 		{
-			this.parent.rotation.y = this.parent.rotation.y + mouseDX - 360;
-		} 
-		else if (this.parent.rotation.y + mouseDX < 0) 
-		{
-			this.parent.rotation.y = 360 - this.parent.rotation.y + mouseDX;
-		} 
-		else 
-		{
-			this.parent.rotation.y += mouseDX;
-		}
+			if (this.parent.rotation.y + mouseDX >= 360) 
+			{
+				this.parent.rotation.y = this.parent.rotation.y + mouseDX - 360;
+			} 
+			else if (this.parent.rotation.y + mouseDX < 0) 
+			{
+				this.parent.rotation.y = 360 - this.parent.rotation.y + mouseDX;
+			} 
+			else 
+			{
+				this.parent.rotation.y += mouseDX;
+			}
 
 
-		if (this.parent.rotation.x - mouseDY >= maxLookDown && this.parent.rotation.x - mouseDY <= maxLookUp) 
-		{
-			this.parent.rotation.x += -mouseDY;
-		} 
-		else if (this.parent.rotation.x - mouseDY < maxLookDown) 
-		{
-			this.parent.rotation.x = maxLookDown;
-		} 
-		else if (this.parent.rotation.x - mouseDY > maxLookUp) 
-		{
-			this.parent.rotation.x = maxLookUp;
+			if (this.parent.rotation.x - mouseDY >= maxLookDown && this.parent.rotation.x - mouseDY <= maxLookUp) 
+			{
+				this.parent.rotation.x += -mouseDY;
+			} 
+			else if (this.parent.rotation.x - mouseDY < maxLookDown) 
+			{
+				this.parent.rotation.x = maxLookDown;
+			} 
+			else if (this.parent.rotation.x - mouseDY > maxLookUp) 
+			{
+				this.parent.rotation.x = maxLookUp;
+			}
 		}
 	}
 
@@ -97,7 +100,7 @@ public class Camera implements ICamera
 	public void processKeyboard(float delta) 
 	{
 		float d=delta;
-		
+
 		if(d < 0)
 			throw new IllegalArgumentException("delta (" + delta + ") is 0 or is smaller than 0");
 
@@ -136,19 +139,20 @@ public class Camera implements ICamera
 		if(fly)
 		{
 			if (flyUp && !flyDown) {
-				//this.world.moveObj(this.parent, new Vector3f(this.parent.position.x, this.parent.position.y + d * 0.003f * moveSpeed, this.parent.position.z));
-				this.parent.velocity.y += d *0.003f * moveSpeed;
+				if(Math.abs(this.parent.velocity.x)+Math.abs(this.parent.velocity.x)+Math.abs(this.parent.velocity.x) < this.moveSpeed)
+					this.parent.velocity.y += d *0.003f * moveSpeed;
 			}
 			if (flyDown && !flyUp) {
-				//this.world.moveObj(this.parent, new Vector3f(this.parent.position.x, this.parent.position.y - d * 0.003f * moveSpeed, this.parent.position.z));
-				this.parent.velocity.y -= d *0.003f * moveSpeed;
+				if(Math.abs(this.parent.velocity.x)+Math.abs(this.parent.velocity.x)+Math.abs(this.parent.velocity.x) < this.moveSpeed)
+					this.parent.velocity.y -= d *0.003f * moveSpeed;
 			}
 		}
 		else
 		{
 			if (flyUp && this.parent.grounded)
 			{
-				this.parent.velocity.y += this.jumpForce;
+				if(Math.abs(this.parent.velocity.x)+Math.abs(this.parent.velocity.x)+Math.abs(this.parent.velocity.x) < this.moveSpeed)
+					this.parent.velocity.y += this.jumpForce * d * 0.06f;
 			}
 		}
 	}
@@ -163,7 +167,16 @@ public class Camera implements ICamera
 			movY = (float)(dy * sin(toRadians(this.parent.rotation.x - 90)) + dz * sin(toRadians(this.parent.rotation.x)));
 		float movZ = (float)(dx * cos(toRadians(this.parent.rotation.y - 90)) + dz * cos(toRadians(this.parent.rotation.y)));
 
-		this.parent.velocity = Vector3f.add(new Vector3f(-movX, movY, movZ), this.parent.velocity, null);
+		/*
+		if(Math.abs(movX) < this.moveSpeed)
+			this.parent.velocity.x -= movX;
+		if(Math.abs(movX) < this.moveSpeed)
+			this.parent.velocity.y += movY;
+		if(Math.abs(movX) < this.moveSpeed)
+			this.parent.velocity.z += movZ;
+		 */
+		if(Math.abs(movX)+Math.abs(movY)+Math.abs(movZ) < this.moveSpeed)
+			this.parent.velocity = Vector3f.add(new Vector3f(-movX, movY, movZ), this.parent.velocity, null);
 	}
 
 	/**

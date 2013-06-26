@@ -1,12 +1,10 @@
 package net.future.model;
+import java.io.File;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.future.material.MyTextureLoader;
 import net.future.physics.AABB;
-
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 import org.lwjgl.util.vector.Vector3f;
@@ -14,8 +12,6 @@ import org.newdawn.slick.opengl.Texture;
 
 public class Model 
 {
-	public List<Integer> temp = new ArrayList<Integer>();
-	public Texture texture;
 	public List<Texture> textures = new ArrayList<Texture>();
 	public int shader = 0;
 	public List<Vector3f> verts = new ArrayList<Vector3f>();
@@ -24,7 +20,9 @@ public class Model
 	public List<Face> faces = new ArrayList<Face>();
 	public String name = "Default";
 	public AABB boundingBox;
-	public float scale = 1;
+	public File file;
+	
+	public float scale;
 	
 	public int vboVertexHandle;
 	public int vboNormalHandle;
@@ -32,6 +30,7 @@ public class Model
 	public int vboColorHandle;
 	public int vboTexIDHandle;
 	
+	//TODO remove these variables, waste of memory
 	public FloatBuffer vertex;
 	public FloatBuffer normal;
 	public FloatBuffer text;
@@ -40,8 +39,9 @@ public class Model
 
 	public float shininess;
 
-	public Model()
+	public Model(String loc)
 	{
+		this.file = new File(loc);
 		this.shininess = 0;
 	}
 
@@ -79,11 +79,11 @@ public class Model
 		}
 	}
 
-	public Model setTexture(String texturePath)
+	//public Model setTexture(String texturePath)
 	{
-		this.texture = MyTextureLoader.getTexture(texturePath);
+		//this.texture = MyTextureLoader.getTexture(texturePath);
 
-		return this;
+		//return this;
 	}
 
 	public Model setShader(int shaderID)

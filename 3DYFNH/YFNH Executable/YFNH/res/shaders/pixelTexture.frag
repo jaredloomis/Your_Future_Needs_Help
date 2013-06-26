@@ -29,6 +29,9 @@ void main()
     //"Main color"(diffuse) of vertex
     vec3 diffColor = diffuseLightIntensity * varyingColour.rgb;
     
+    //Distance from light
+    //diffColor /= 0.01*distance(vectexPosition, gl_LightSource[0].position.xyz);
+    
     //Lowest light level possible
     vec3 ambColor = gl_LightModel.ambient;
     
@@ -55,7 +58,7 @@ void main()
     /// END SPEC LIGHTING ///
     
     if(texID == -1)
-	{	
+	{
 		//Does not have a texture, just use diffuse, specular, and ambient colors
 		fragColor = vec4(ambColor, 1.0) + vec4(diffColor + specColor, 1.0);
 	}
@@ -65,5 +68,5 @@ void main()
 		fragColor = vec4(ambColor, 1.0) + vec4(diffColor * vec3(texture(textures[texID], gl_TexCoord[0].st)) + specColor, 1.0);
 	}
 
-	fragColor = mix(gl_Fog.color, fragColor, fogFactor );
+	//fragColor = mix(gl_Fog.color, fragColor, fogFactor);
 }

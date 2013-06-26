@@ -1,6 +1,5 @@
 package net.future.helper;
 import java.nio.FloatBuffer;
-import net.future.gui.GuiHelper;
 import net.future.player.Player;
 import static org.lwjgl.opengl.GL11.*;
 import org.lwjgl.opengl.Display;
@@ -35,7 +34,7 @@ public class FontHelper
 		//// END DRAW TEXT ///
 
 		//Update GUI
-		GuiHelper.update();
+		//GuiHelper.update();
 
 		glEnable(GL_LIGHTING);
 		glPopMatrix();

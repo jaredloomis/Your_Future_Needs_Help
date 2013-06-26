@@ -28,6 +28,7 @@ void main()
     //Set texture coords
     gl_TexCoord[0] = gl_MultiTexCoord0;
     
+    
     /// FOG STUFF ///
     
     //Log 2
@@ -35,12 +36,15 @@ void main()
     
     //Set fogCoord
 	gl_FogFragCoord = length(gl_Position);
-	fogFactor = exp2( 
-					   -gl_Fog.density * 
-					   gl_Fog.density * 
-					   gl_FogFragCoord * 
-					   gl_FogFragCoord * 
-					   LOG2 
-					);
+	
+	//exp2(x) -same as- pow(2, x)
+	fogFactor = exp2(
+		-gl_Fog.density *
+		gl_Fog.density  *
+		gl_FogFragCoord *
+		gl_FogFragCoord *
+		LOG2
+		);
+		
 	fogFactor = clamp(fogFactor, 0.0, 1.0);
 }

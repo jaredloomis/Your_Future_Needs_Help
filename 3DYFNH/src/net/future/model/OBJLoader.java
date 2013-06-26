@@ -11,6 +11,7 @@ import java.util.List;
 import static org.lwjgl.opengl.GL11.*;
 import net.future.material.Material;
 import net.future.material.MyTextureLoader;
+import net.future.material.ShaderLoader;
 
 import org.lwjgl.BufferUtils;
 import static org.lwjgl.opengl.GL15.*;
@@ -19,6 +20,16 @@ import org.lwjgl.util.vector.Vector3f;
 
 public class OBJLoader 
 {
+	public static Model completeLoadModel(File f, int shiny, float scale, String vertexShader, String fragmentShader)
+	{
+		return loadModel(f).
+		setShininess(shiny).
+		setShader(ShaderLoader.loadShaderPair(vertexShader, fragmentShader)).
+		setUpAABB().
+		setScale(scale).
+		setUpVBO();
+	}
+	
 	/**
 	 * Loads a model.
 	 * Requirements for model: 
@@ -26,7 +37,7 @@ public class OBJLoader
 	 * <li><b>Wavefront</b> .obj format</li>
 	 * <li>Triangulated faces</li>
 	 * <li>Normals included</li>
-	 * <li>One or no image files</li>
+	 * <li>7 or fewer image files</li>
 	 * </ul>
 	 * 
 	 * @param f - The path of the .obj file
@@ -38,7 +49,7 @@ public class OBJLoader
 		{
 			BufferedReader reader = new BufferedReader(new FileReader(f));
 
-			Model m = new Model();
+			Model m = new Model(f.getPath());
 			Material cur = null;
 			List<Material> mats = new ArrayList<Material>();
 
@@ -124,16 +135,11 @@ public class OBJLoader
 							float x1 = m.textureCoords.get((int)textureIndices.x - 1).x;
 							float y1 = 1 - m.textureCoords.get((int)textureIndices.x - 1).y;
 							Vector2f t1 = new Vector2f(x1, y1);
-							//Vector2f t1 = Vector2f.sub(new Vector2f(1, 1), m.textureCoords.get((int)textureIndices.x - 1), null);
 							mf.textureCoords[0] = t1;
-							//Vector2f t2 = m.textureCoords.get((int)textureIndices.y - 1);
-							//Vector2f t2 = Vector2f.sub(new Vector2f(1, 1), m.textureCoords.get((int)textureIndices.y - 1), null);
 							float x2 = m.textureCoords.get((int)textureIndices.y - 1).x;
 							float y2 = 1 - m.textureCoords.get((int)textureIndices.y - 1).y;
 							Vector2f t2 = new Vector2f(x2, y2);
 							mf.textureCoords[1] = t2;
-							//Vector2f t3 = m.textureCoords.get((int)textureIndices.z - 1);
-							//Vector2f t3 = Vector2f.sub(new Vector2f(1, 1), m.textureCoords.get((int)textureIndices.z - 1), null);
 							float x3 = m.textureCoords.get((int)textureIndices.z - 1).x;
 							float y3 = 1 - m.textureCoords.get((int)textureIndices.z - 1).y;
 							Vector2f t3 = new Vector2f(x3, y3);
@@ -144,8 +150,6 @@ public class OBJLoader
 						if(cur != null)
 						{
 							mf.material = cur;
-							//if(cur.texture!=null)
-								//m.texture = cur.texture;
 						}
 
 						//Tell face to set up AABB
@@ -274,9 +278,8 @@ public class OBJLoader
 					//Set the material's texture to specified texture
 					mtl.texture = MyTextureLoader.getTexture(f.getParentFile() + File.separator + line.split(" ")[1]);
 					m.textures.add(mtl.texture);
-					m.texture = mtl.texture;
+					//m.texture = mtl.texture;
 					mtl.id = matNum;
-					m.temp.add(matNum);
 				}
 				//Specifying specular texture map
 				//TODO add support for specular texture map

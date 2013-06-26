@@ -1,6 +1,8 @@
 package net.future.material;
 import static org.lwjgl.opengl.GL11.*;
 
+import java.io.File;
+
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.util.vector.Vector3f;
 import org.newdawn.slick.opengl.Texture;
@@ -8,11 +10,13 @@ import org.newdawn.slick.opengl.Texture;
 
 public class SkyBox 
 {
-	Texture texture;
+	public Texture texture;
+	public File f;
 	
-	public SkyBox(Texture t)
+	public SkyBox(File f)
 	{
-		texture = t;
+		this.f = f;
+		texture = MyTextureLoader.getTexture(f.getPath());
 	}
 	
 	public void render(Vector3f v)
@@ -22,13 +26,11 @@ public class SkyBox
 		int boxSize = 1;
 		
 		glDisable(GL_LIGHTING);
-		glDepthMask(false); 
-		glEnable(GL_TEXTURE_2D);
+		glDepthMask(false);
 		texture.bind();
 		GL13.glActiveTexture(GL13.GL_TEXTURE0);
 		glBegin(GL_QUADS);
 		{
-			
 			//TOP
 			//glColor3f(1, 0, 0);
 			glTexCoord2f(1, 1);

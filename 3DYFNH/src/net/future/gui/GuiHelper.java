@@ -2,33 +2,32 @@ package net.future.gui;
 
 public class GuiHelper 
 {
-	//NOTE: ALWAYS DRAW COUNTER-CLOCKWISE
+	static float[] verts = new float[]
+	{
+			0, 0,
+			1, 0,
+			1, 1,
+			0, 1
+	}; 
+	
+	static float[] colors = new float[]
+	{
+		1, 0, 0,
+		0, 1, 0,
+		0, 0, 1,
+		1, 1, 0
+	};
+	
+	static boolean t = false;
+	static Gui g;
+	
 	public static void update()
 	{
-		//new Gui().draw();
-		/*
-		Texture t = MyTextureLoader.getTexture("res/textures/BasicBlock.png");
-		t.bind();
-		
-		glBegin(GL_QUADS);
+		//if(!t)
 		{
-			//glTexCoord2f(0, 0);
-			glColor4f(1, 0, 0, 1);  //NOT SHOWN
-			glVertex2f(100, 100);
-
-			//glTexCoord2f(1, 0);
-			glColor4f(1, 0, 0, 1);  //TOP RIGHT
-			glVertex2f(100, 300);
-
-			//glTexCoord2f(0, 1);
-			glColor4f(1, 0, 0, 1);  //BOTTOM LEFT
-			glVertex2f(300, 300);
-
-			//glTexCoord2f(1, 1);
-			glColor4f(1, 0, 0, 1);  //BOTTOM RIGHT
-			glVertex2f(300, 100);
+			//g = new Gui(verts, colors);
+			//t=!t;
 		}
-		glEnd();
-		*/
+		//g.draw();
 	}
 }

@@ -1,0 +1,3 @@
+p 8.087561 22.016855 51.015186
+go res\models\testWorld_1\testWorld_1.obj 1.0 1.0 1.0 1.0
+sky res\textures\stars.jpg

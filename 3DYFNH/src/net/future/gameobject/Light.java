@@ -3,6 +3,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
+import org.lwjgl.util.vector.Vector3f;
+
 import net.future.world.World;
 
 public class Light extends GameObject
@@ -30,18 +32,11 @@ public class Light extends GameObject
 	@Override
 	public void update()
 	{
-		//glPushAttrib(GL_TRANSFORM_BIT);
-		//glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0f);
-		//glLightModelf(GL_LIGHT_MODEL_LOCAL_VIEWER, 1.0f);
-
-		//glLightModeli(GL12.GL_LIGHT_MODEL_COLOR_CONTROL, GL12.GL_SEPARATE_SPECULAR_COLOR);
-		
 		glLight(id, GL_POSITION, lightPosition);	
 		glLightModel(GL_LIGHT_MODEL_AMBIENT, ambientInt);
 		glLight(id, GL_AMBIENT, ambientInt);
-		glLight(id, GL_SPECULAR, specInt);				
+		//glLight(id, GL_SPECULAR, specInt);				
 		glLight(id, GL_DIFFUSE, diffInt);
-		//glPopAttrib();
 	}
 	
 	public void init() 
@@ -50,7 +45,7 @@ public class Light extends GameObject
 		glLight(id, GL_POSITION, lightPosition);	
 		glLightModel(GL_LIGHT_MODEL_AMBIENT, ambientInt);
 		glLight(id, GL_AMBIENT, ambientInt);
-		glLight(id, GL_SPECULAR, specInt);				
+		//glLight(id, GL_SPECULAR, specInt);				
 		glLight(id, GL_DIFFUSE, diffInt);
 		
 		glEnable(id);
@@ -71,5 +66,13 @@ public class Light extends GameObject
 
 		ambientInt = BufferUtils.createFloatBuffer(4);
 		ambientInt.put(ambient[0]).put(ambient[1]).put(ambient[2]).put(ambient[3]).flip();
+	}
+	
+	public void move(Vector3f position)
+	{
+		this.world.lights[0].lightPosition.flip();
+        this.world.lights[0].lightPosition.clear();
+        this.world.lights[0].lightPosition.put(new float[]{position.x, position.y, position.z, 1});
+        this.world.lights[0].lightPosition.flip();
 	}
 }
