@@ -12,6 +12,7 @@
   - With the AABB revision above, the only thing that would need to be rotated is/are the AABB(s), then glRotatef() could be called
 - Support for animation
   - Preferably without the use of a bunch of .OBJ files, but with a seperate animation file. This would have to be manually "coded" or a tool could be made
+- Image-based GUI Support
 <h2>Team</h2>
 - Jared
 - Ian
