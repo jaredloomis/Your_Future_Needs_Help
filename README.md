@@ -13,6 +13,7 @@
 - Support for animation
   - Preferably without the use of a bunch of .OBJ files, but with a seperate animation file. This would have to be manually "coded" or a tool could be made
 - Image-based GUI Support
+- Add some of the memory-management that should already be in place (clean-up stuff)
 <h2>Team</h2>
 - Jared
 - Ian
