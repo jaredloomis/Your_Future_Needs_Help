@@ -4,9 +4,9 @@
 - Game Content
   - Models / Textures / Assets
   - Storyline
-- Faster Collision Detection
-  - Each face will not have AABB
-  - Each model will have AABB(s) specified by modeler / coder in another file or in the .OBJ file
+- <del>Faster Collision Detection</del>
+  - <del>Each face will not have AABB</del> Each face still has an AABB, but it is only used if no other AABB is specified in the .OBJ file
+  - <del>Each model will have AABB(s) specified by modeler / coder in another file or in the .OBJ file</del>
   - Possibly a tool to automate the process
 - Rotational Physics
   - With the AABB revision above, the only thing that would need to be rotated is/are the AABB(s), then glRotatef() could be called
