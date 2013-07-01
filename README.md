@@ -10,8 +10,8 @@
   - Possibly a tool to automate the process
 - Rotational Physics
   - With the AABB revision above, the only thing that would need to be rotated is/are the AABB(s), then glRotatef() could be called
-- Support for animation
-  - Preferably without the use of a bunch of .OBJ files, but with a seperate animation file. This would have to be manually "coded" or a tool could be made
+- <del>Support for animation</del>
+  - Preferably without the use of a bunch of .OBJ files.
 - Image-based GUI Support
 - Add some of the memory-management that should already be in place (clean-up stuff)
 <h2>Team</h2>
