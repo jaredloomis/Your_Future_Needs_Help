@@ -14,6 +14,7 @@
   - Preferably without the use of a bunch of .OBJ files.
 - Image-based GUI Support
 - Add some of the memory-management that should already be in place (clean-up stuff)
+- Support for GLSL Post-Processing effects like motion blur, and depth of field
 <h2>Team</h2>
 - Jared
 - Ian
