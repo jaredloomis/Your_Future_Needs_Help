@@ -16,5 +16,5 @@
 - Add some of the memory-management that should already be in place (clean-up stuff)
 - Support for GLSL Post-Processing effects like motion blur, and depth of field
 <h2>Team</h2>
-- Jared
-- Ian
+- Jared (fiendfan1@yahoo.com)
+- Ian (Put email here if you want)
