@@ -16,6 +16,7 @@
 - Add some of the memory-management that should already be in place (clean-up stuff)
 - Support for GLSL Post-Processing effects like motion blur, and depth of field
 - Shadows
+- Binary Space Partitioning or chunks to be used in collision detection (grouping of nearby vertices)
 <h2>Team</h2>
 - Jared (fiendfan1@yahoo.com)
 - Ian (Put email here if you want)
