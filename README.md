@@ -15,7 +15,16 @@
 - Image-based GUI Support
 - Add some of the memory-management that should already be in place (clean-up stuff)
 - Support for GLSL Post-Processing effects like motion blur, and depth of field
-- Shadows 
+  - Will require the use of Frame Buffer Objects and more uniforms and in variables for GLSL to work with
+  - http://www.cosy.sbg.ac.at/~held/teaching/einfuehrung_graphik/projekt_2005/hummel_jenisch.pdf
+  - http://en.wikibooks.org/wiki/OpenGL_Programming/Motion_Blur
+  - http://screamyguy.net/DepthOfField/
+  - https://en.wikibooks.org/wiki/OpenGL_Programming/Depth_of_Field
+  - Often requires accumulation buffer:
+    - http://lwjgl.org/forum/index.php?topic=1367.0
+    - http://www.java-gaming.org/index.php/topic,5111.0
+    - http://www.jarvana.com/jarvana/view/org/lwjgl/lwjgl/lwjgl/2.8.0/lwjgl-2.8.0-javadoc.jar!/org/lwjgl/opengl/class-use/PixelFormat.html
+- Shadows - Shadow Mapping (or Shadow Volumes in some cases)
   - http://www.youtube.com/watch?v=IiqiCVs3R4Q
   - http://www.opengl.org/discussion_boards/showthread.php/181334-LWJGL-Shadow-Mapping
   - http://en.wikipedia.org/wiki/Shadow_mapping
@@ -24,7 +33,6 @@
   - http://www.flyingkakapo.co.nz/Code/Lesson27Fixed.java
   - http://flyingkakapo.blogspot.com/2012/10/shadow-volumes-with-lwjgl.html
 - Binary Space Partitioning or chunks to be used in collision detection (grouping of nearby vertices)
-  - Collision detection will not be done per object, but per chunk or per patrition. A list of all Faces in game would need to be added to World
 <h2>Team</h2>
 - Jared (fiendfan1@yahoo.com)
 - Ian (Put email here if you want)
