@@ -33,6 +33,9 @@
   - http://www.flyingkakapo.co.nz/Code/Lesson27Fixed.java
   - http://flyingkakapo.blogspot.com/2012/10/shadow-volumes-with-lwjgl.html
 - Binary Space Partitioning or chunks to be used in collision detection (grouping of nearby vertices)
+- Antialiasing
+  - http://stackoverflow.com/questions/10508872/opengl-antialiasing-without-the-accumulation-buffer/10509064#10509064
+  - http://stackoverflow.com/questions/4112106/anti-aliasing-in-opengl
 <h2>Team</h2>
 - Jared (fiendfan1@yahoo.com)
 - Ian (Put email here if you want)
