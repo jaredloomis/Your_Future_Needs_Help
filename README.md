@@ -15,7 +15,14 @@
 - Image-based GUI Support
 - Add some of the memory-management that should already be in place (clean-up stuff)
 - Support for GLSL Post-Processing effects like motion blur, and depth of field
-- Shadows
+- Shadows 
+  - http://www.youtube.com/watch?v=IiqiCVs3R4Q
+  - http://www.opengl.org/discussion_boards/showthread.php/181334-LWJGL-Shadow-Mapping
+  - http://en.wikipedia.org/wiki/Shadow_mapping
+  - http://en.wikipedia.org/wiki/Shadow_volume
+  - http://www.dreamincode.net/forums/topic/149241-shadow-mapping/
+  - http://www.flyingkakapo.co.nz/Code/Lesson27Fixed.java
+  - http://flyingkakapo.blogspot.com/2012/10/shadow-volumes-with-lwjgl.html
 - Binary Space Partitioning or chunks to be used in collision detection (grouping of nearby vertices)
 <h2>Team</h2>
 - Jared (fiendfan1@yahoo.com)
