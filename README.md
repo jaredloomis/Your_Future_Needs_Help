@@ -24,6 +24,7 @@
   - http://www.flyingkakapo.co.nz/Code/Lesson27Fixed.java
   - http://flyingkakapo.blogspot.com/2012/10/shadow-volumes-with-lwjgl.html
 - Binary Space Partitioning or chunks to be used in collision detection (grouping of nearby vertices)
+  - Collision detection will not be done per object, but per chunk or per patrition. A list of all Faces in game would need to be added to World
 <h2>Team</h2>
 - Jared (fiendfan1@yahoo.com)
 - Ian (Put email here if you want)
